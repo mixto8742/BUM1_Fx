@@ -1,8 +1,12 @@
-package eus.ehu.bum1_fx;
+package eus.ehu.bum1_fx.Presentation;
 
 import java.util.InputMismatchException;
 import java.util.Locale;
 import java.util.Scanner;
+
+import eus.ehu.bum1_fx.Business_logic.CommissionCalculator;
+import eus.ehu.bum1_fx.Business_logic.Currency;
+import eus.ehu.bum1_fx.Business_logic.ForexOperator;
 
 public class CalculatorStarter {
 

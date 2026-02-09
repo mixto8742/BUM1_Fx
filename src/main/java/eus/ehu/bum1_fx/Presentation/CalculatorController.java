@@ -1,9 +1,9 @@
-package eus.ehu.bum1_fx;
-
+package eus.ehu.bum1_fx.Presentation;
+import eus.ehu.bum1_fx.Business_logic.ExchangeCalculator;
+import eus.ehu.bum1_fx.Business_logic.BarcenaysCalculator;
 import java.math.RoundingMode;
 import java.text.NumberFormat;
 import java.util.Locale;
-
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,13 +31,15 @@ public class CalculatorController {
         @FXML
         private ComboBox<String> toComboBox;
 
+        private ExchangeCalculator bizLogic;
         @FXML
         void initialize() {
+            this.bizLogic = new BarcenaysCalculator();
             // initialize toComboBox
-            fromComboBox.setItems(FXCollections.observableArrayList(Currency.longNames()));
+            fromComboBox.setItems(FXCollections.observableArrayList(bizLogic.getCurrencyLongNames()));
 
             // initialize fromComboBox
-            toComboBox.setItems(FXCollections.observableArrayList(Currency.longNames()));
+            toComboBox.setItems(FXCollections.observableArrayList(bizLogic.getCurrencyLongNames()));
 
             result.setBackground(new Background(
                     new BackgroundFill(Color.WHITE, CornerRadii.EMPTY, Insets.EMPTY)));
@@ -61,13 +63,12 @@ public class CalculatorController {
                 if (origCurrency.equals(endCurrency)) {
                     result.setText("Please select different currencies");
                 } else {
-                    ForexOperator operator = new ForexOperator(origCurrency,
-                            origAmount, endCurrency);
                     try {
-                        double destAmount = operator.getChangeValue();
-                        CommissionCalculator calculator = new CommissionCalculator(destAmount,
-                                endCurrency);
-                        destAmount -= calculator.calculateCommission();
+                        double destAmount = bizLogic.getChangeValue(origCurrency, origAmount, endCurrency);
+                        double commission = bizLogic.calculateCommission(destAmount, endCurrency);
+                        
+                        destAmount -= commission;
+                        
                         NumberFormat twoDecimal = NumberFormat.getNumberInstance(Locale.US);
                         twoDecimal.setMaximumFractionDigits(2);
                         twoDecimal.setRoundingMode(RoundingMode.FLOOR);
